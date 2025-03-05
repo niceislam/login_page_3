@@ -1,4 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:login_page_3/screen/Controller.dart';
+
+import 'homePage.dart';
 
 class AppBody extends StatefulWidget {
   const AppBody({super.key});
@@ -98,10 +104,6 @@ class _AppBodyState extends State<AppBody> {
                 if (value == null || value == "") {
                   return "field can't be empty.";
                 } else if (value.length < 8) {
-                  return "Password is very short.";
-                } else if (!(RegExp("[A-Z]").hasMatch(value) &&
-                    RegExp("[a-z]").hasMatch(value) &&
-                    RegExp("[0-9]").hasMatch(value))) {
                   return "Password not secure.";
                 }
               },
@@ -110,12 +112,19 @@ class _AppBodyState extends State<AppBody> {
               height: 80,
             ),
             InkWell(
-              onTap: () {
-                if (mykey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login success")));
-                }else{
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login failed")));
+              onTap: ()async{
+
+                EasyLoading.show();
+                bool status = await DataController.niceData(
+                    mail: '${mailController.text}',
+                    password: '${passwordController.text}');
+                log("============${status}");
+                if(status){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (c)=> HomeNextScreen()));
                 }
+
+
+
               },
               child: Container(
                 height: 35,
